@@ -4,7 +4,7 @@ project(FurierTransform)
 add_executable(FourierTransformation.c)
 
 # file(GLOB kernels RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cl")
-set(kernels "FourierTransformation.cl")
+set(kernels "FourierKernel.cl")
 foreach(kernel ${kernels})
   configure_file(${kernel} ${kernel} COPYONLY)
   message(${kernel})
