@@ -31,6 +31,26 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
         fprintf(stderr, "Failed to createg queue.\n");
         return -1;
     }
+
+    int err;
+    cl_program program = clCreateProgramWithSource(context, 1, (const char **)&program_text, NULL, &err);
+    if (err < 0)
+    {
+        fprintf(stderr, "Failed to create cl program.\n");
+        return -1;
+    }
+
+    err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+    if (err != CL_SUCCESS)
+    {
+        size_t len;
+        char buffer[2048];
+
+        fprintf(stderr, "Failed to build program executable!\n");
+        clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
+        fprintf(stderr, "%s\n", buffer);
+        return -1;
+    }
 }
 
 int main() {
