@@ -76,6 +76,54 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
         return -1;
     }
 
+    // Copy data to device
+    double transfer_sec = 0.0;
+    cl_event prof_event;
+
+    err = clEnqueueWriteBuffer(commands, d_Y, CL_TRUE, 0, N, h_Yn, 0, NULL, &prof_event);
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to write to device!\n");
+        return -1;
+    }
+    // Wait for transfer to finish
+    clFinish(commands);
+
+    // Set the arguments to our compute kernel
+    int n = N;
+    err = clSetKernelArg(kernel, 0, sizeof(int), &n);
+    //... what else goes herre has to be added when .cl file is thought out
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to set kernel arguments!\n");
+        return -1;
+    }
+
+    // Execute the kernel
+    size_t global_size[] = {N, N};
+    err = clEnqueueNDRangeKernel(commands, kernel, 2, NULL, global_size, NULL, 0, NULL, &prof_event);
+    if (err) {
+        fprintf(stderr, "Failed to execute kernel!\n");
+        return -1;
+    }
+    clFinish(commands);
+
+    // Copy Result Data Back
+    err = clEnqueueReadBuffer(commands, d_Y, CL_TRUE, 0, N, h_Ck, 0, NULL, &prof_event);
+    if (err != CL_SUCCESS) {
+        fprintf(stderr, "Failed to read result!\n");
+        return -1;
+    }
+    clFinish(commands);
+
+    //release memory on device and host
+    //free Program, context, etc.
+    clReleaseMemObject(d_Y);
+    clReleaseProgram(program);
+    clReleaseKernel(kernel);
+    clReleaseCommandQueue(commands);
+    clReleaseContext(context);
+    free(h_Yn);
+    free(h_Ck);
+    return 0;
 
 }
 
