@@ -63,8 +63,10 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
 
     //Prepare signal data on Host machine
     float *h_Yn = malloc(N);
+    float *h_Ck = malloc(N);
     for (size_t i = 0; i < N - 1; i++) {
         h_Yn[i] = calculateSignal(i);
+        h_Ck[i] = -1;
     }
 
     //create array buffer in the device memory
@@ -73,6 +75,8 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
         fprintf(stderr, "Failed to allocate device memory\n");
         return -1;
     }
+
+
 }
 
 //Calculate the value of a singal at a given point
