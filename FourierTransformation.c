@@ -90,7 +90,10 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
 
     // Set the arguments to our compute kernel
     int n = N;
+    int k = T;
     err = clSetKernelArg(kernel, 0, sizeof(int), &n);
+    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &h_Yn);
+    err |= clSetKernelArg(kernel, 2, sizeof(int), &k);
     //... what else goes herre has to be added when .cl file is thought out
     if (err != CL_SUCCESS) {
         fprintf(stderr, "Failed to set kernel arguments!\n");
