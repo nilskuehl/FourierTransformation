@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
-project(FurierTransform)
+project(FurierTrans)
 
-add_executable(FourierTransformation.c)
+add_executable(FourierTransform FourierTransformation.c)
 
-# file(GLOB kernels RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cl")
 set(kernels "FourierKernel.cl")
 foreach(kernel ${kernels})
   configure_file(${kernel} ${kernel} COPYONLY)
@@ -14,4 +13,4 @@ find_package(OpenCL REQUIRED)
 
 INCLUDE_DIRECTORIES(${OpenCL_INCLUDE_DIRS}) 
 
-target_link_libraries(FurierTransform ${OpenCL_LIBRARY})
+target_link_libraries(FourierTransform ${OpenCL_LIBRARY})
