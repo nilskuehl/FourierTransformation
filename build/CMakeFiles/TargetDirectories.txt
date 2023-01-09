@@ -1,0 +1,3 @@
+/Users/nilskuhl/dev/FourierTransformation/build/CMakeFiles/FourierTransform.dir
+/Users/nilskuhl/dev/FourierTransformation/build/CMakeFiles/edit_cache.dir
+/Users/nilskuhl/dev/FourierTransformation/build/CMakeFiles/rebuild_cache.dir
