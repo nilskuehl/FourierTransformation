@@ -5,9 +5,9 @@
 #include <math.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "platform.h"
-#include "raylib.h"
-#include "raygui.h"
+//#include "platform.h"
+//#include "raylib.h"
+//#include "raygui.h"
 #include <sys/time.h>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -26,15 +26,20 @@
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 #define RAYGUI_SUPPORT_ICONS
 #define RAYGUI_IMPLEMENTATION
-
+/*
 typedef struct state
 {
     f32 Signal[NUM_SAMPLES];
     f32 FourierTransform[NUM_SAMPLES];
-} state;
+} state;*/
 
 
-int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
+//Calculate the value of a singal at a given point
+float calculateSignal(int x) {
+    return (float) sin(x) + cos(x);
+} 
+
+int transform(cl_device_id device, char *program_text, char *kernel_name, struct benchmark_result *result) {
     
     //Context
     cl_context context;
@@ -92,6 +97,12 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
         fprintf(stderr, "Failed to allocate device memory\n");
         return -1;
     }
+    //create array buffer in the device memory
+    cl_mem d_Ck = clCreateBuffer(context, CL_MEM_READ_WRITE, N, NULL, NULL);
+    if (!d_Ck) {
+        fprintf(stderr, "Failed to allocate device memory\n");
+        return -1;
+    }
 
     // Copy data to device
     double transfer_sec = 0.0;
@@ -108,9 +119,9 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
     // Set the arguments to our compute kernel
     int n = N;
     int k = T;
-    err = clSetKernelArg(kernel, 0, sizeof(int), &n);
-    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &h_Yn);
-    err |= clSetKernelArg(kernel, 2, sizeof(int), &k);
+    err = clSetKernelArg(kernel, 0, sizeof(int), n);
+    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_Y);
+    err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_Ck);
     //... what else goes herre has to be added when .cl file is thought out
     if (err != CL_SUCCESS) {
         fprintf(stderr, "Failed to set kernel arguments!\n");
@@ -118,7 +129,7 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
     }
 
     // Execute the kernel
-    size_t global_size[] = {N, N};
+    size_t global_size[] = {N};
     err = clEnqueueNDRangeKernel(commands, kernel, 2, NULL, global_size, NULL, 0, NULL, &prof_event);
     if (err) {
         fprintf(stderr, "Failed to execute kernel!\n");
@@ -127,7 +138,7 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
     clFinish(commands);
 
     // Copy Result Data Back
-    err = clEnqueueReadBuffer(commands, d_Y, CL_TRUE, 0, N, h_Ck, 0, NULL, &prof_event);
+    err = clEnqueueReadBuffer(commands, d_Ck, CL_TRUE, 0, N, h_Ck, 0, NULL, &prof_event);
     if (err != CL_SUCCESS) {
         fprintf(stderr, "Failed to read result!\n");
         return -1;
@@ -141,17 +152,13 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, _) {
     clReleaseKernel(kernel);
     clReleaseCommandQueue(commands);
     clReleaseContext(context);
-    free(h_Yn);
-    free(h_Ck);
+    //free(h_Yn);
+    //free(h_Ck);
     return 0;
 
 }
 
-//Calculate the value of a singal at a given point
-float calculateSignal(int x) {
-    return (float) Sin(x) + Cos(x);
-}
-
+/*
 internal void 
 SlowFourierTransform(f32 *TimeDomain, f32 *FreqDomain, i32 Size)
 {
@@ -312,7 +319,7 @@ Draw(state *State)
              SumXFinal,
              SumYFinal,
              Sum2DCol);
-    */  
+    */  /*
     SlowFourierTransform(&State->Signal[0], &State->FourierTransform[0], NUM_SAMPLES);
     
     // Draw the frequency domain
@@ -358,5 +365,67 @@ main(i32 argc, char **argv)
     
     CloseAudioDevice();
     CloseWindow();
+    return 0;
+}*/
+
+struct benchmark_result {
+    double transfer_time;
+    double calc_time;
+    int errors;
+};
+
+int main() {
+    // Get all devices
+    cl_device_id *devices;
+    cl_uint n_devices;
+    clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, 3, NULL, &n_devices);
+    devices = (cl_device_id *) malloc(n_devices * sizeof(cl_device_id));
+    clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, n_devices, devices, NULL);
+    if(n_devices == 0) {
+        fprintf(stderr, "No devices found. Exiting.\n");
+        return -1;
+    }
+
+    char name[128];
+    printf("Devices:\n");
+    for(int i=0;i<n_devices;i++) {
+        clGetDeviceInfo(devices[i], CL_DEVICE_NAME, sizeof(name), name, NULL);
+        printf("[%d]: %s\n", i, name);
+    }
+
+    // Load program from file
+    FILE *program_file = fopen(CL_PROGRAM_FILE, "r");
+    if(program_file == NULL) {
+        fprintf(stderr, "Failed to open OpenCL program file\n");
+        return -1;
+    }
+    fseek(program_file, 0, SEEK_END);
+    size_t program_size = ftell(program_file);
+    rewind(program_file);
+    char *program_text = (char *) malloc((program_size + 1) * sizeof(char));
+    program_text[program_size] = '\0';
+    fread(program_text, sizeof(char), program_size, program_file);
+    fclose(program_file);
+    
+
+    printf("Device                                        | GFLOP/s w/o transfer | GFLOP/s w/ transfer |      Errors\n");
+    printf("--------------------------------------------------------------------------------------------------------\n");
+    for(int i=0; i<n_devices;i++) {
+        clGetDeviceInfo(devices[i], CL_DEVICE_NAME, sizeof(name), name, NULL);
+        printf("[%d]: %40s | ", i, name);
+
+        struct benchmark_result result;
+
+        transform(devices[i], program_text, KERNEL_NAME, &result);
+
+        double gflops_calc = 2.0 * N * N * N / 1e9 / result.calc_time;
+        double gflops_transfer = 2.0 * N * N * N / 1e9 / (result.transfer_time + result.calc_time);
+        
+        printf("          %10.2f |          %10.2f |   %9d\n", gflops_calc, gflops_transfer, result.errors);
+    }
+      
+    
+    free(program_text);
+    free(devices);
     return 0;
 }

@@ -1,23 +1,22 @@
-__kernel void fourier_transformation(__global const int N, __global const int *k,
-                                    __global const float *Yn, __global const int *Ck//what else goes here?)
+__kernel void fourier_transformation(const int N,
+                                    __global const float *Yn, __global float *Ck)
 {
-    //make sum local var
+
     for (int Ki = 0; Ki < N; Ki++)
     {
-        float K = ((float)Ki/N) * 10.0f;
+        float K = (Ki/N) * 10.0f;
         float SumX = 0;
         float SumY = 0;
         for (int Ni = 0; Ni < N; Ni++)
         {
-            float Ns = (float)Ni/N;
-            float Theta = 2*PI*K*Ns;
-            float Magnitude = Yn;
-            float X = sinf(Theta) * Yn;
-            float Y = cosf(Theta) * Yn;
+            float Ns = (float) (Ni/get_global_id(0));
+            float Theta = 2*3.14*K*Ns;
+            float X = sin(Theta) * Yn[get_global_id(0)];
+            float Y = cos(Theta) * Yn[get_global_id(0)];
             SumX += X;
             SumY += Y;
         }
-        Ck = SumX;
+        Ck[get_global_id(0)] = SumX;
     }
 
 }
