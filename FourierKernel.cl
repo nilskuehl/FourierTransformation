@@ -1,7 +1,8 @@
 __kernel void fourier_transformation(const int N,
                                     __global const float *Yn, __global float *Ck)
 {
-
+    if(get_global_id(0) >= N)
+        return;
     for (int Ki = 0; Ki < N; Ki++)
     {
         float K = (Ki/N) * 10.0f;

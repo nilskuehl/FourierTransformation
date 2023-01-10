@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/Users/nilskuhl/dev/FourierTransformation/build",
-  "command": "/usr/bin/clang  -F/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -o CMakeFiles/FourierTransform.dir/FourierTransformation.c.o -c /Users/nilskuhl/dev/FourierTransformation/FourierTransformation.c",
-  "file": "/Users/nilskuhl/dev/FourierTransformation/FourierTransformation.c"
-}
-]

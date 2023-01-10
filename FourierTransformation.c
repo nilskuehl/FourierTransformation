@@ -33,6 +33,11 @@ typedef struct state
     f32 FourierTransform[NUM_SAMPLES];
 } state;*/
 
+struct benchmark_result {
+    double transfer_time;
+    double calc_time;
+    int errors;
+};
 
 //Calculate the value of a singal at a given point
 float calculateSignal(int x) {
@@ -65,7 +70,7 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
     }
 
     //build Program with headers used for calculation
-    err = clBuildProgram(program, 0, NULL, "-I complex.h", NULL, NULL);
+    err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
     if (err != CL_SUCCESS) {
         size_t len;
         char buffer[2048];
@@ -84,21 +89,22 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
     }
 
     //Prepare signal data on Host machine
-    float *h_Yn = malloc(N);
-    float *h_Ck = malloc(N);
+    float *h_Yn = malloc(N*sizeof(float));
+    float *h_Ck = malloc(N*sizeof(float));
     for (size_t i = 0; i < N - 1; i++) {
         h_Yn[i] = calculateSignal(i);
         h_Ck[i] = -1;
     }
 
     //create array buffer in the device memory
-    cl_mem d_Y = clCreateBuffer(context, CL_MEM_READ_ONLY, N, NULL, NULL);
+    
+    cl_mem d_Y = clCreateBuffer(context, CL_MEM_READ_ONLY, N*sizeof(float), NULL, &err);
     if (!d_Y) {
         fprintf(stderr, "Failed to allocate device memory\n");
         return -1;
     }
     //create array buffer in the device memory
-    cl_mem d_Ck = clCreateBuffer(context, CL_MEM_READ_WRITE, N, NULL, NULL);
+    cl_mem d_Ck = clCreateBuffer(context, CL_MEM_READ_WRITE, N*sizeof(float), NULL, NULL);
     if (!d_Ck) {
         fprintf(stderr, "Failed to allocate device memory\n");
         return -1;
@@ -119,7 +125,7 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
     // Set the arguments to our compute kernel
     int n = N;
     int k = T;
-    err = clSetKernelArg(kernel, 0, sizeof(int), n);
+    err = clSetKernelArg(kernel, 0, sizeof(int), &n);
     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_Y);
     err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_Ck);
     //... what else goes herre has to be added when .cl file is thought out
@@ -130,7 +136,7 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
 
     // Execute the kernel
     size_t global_size[] = {N};
-    err = clEnqueueNDRangeKernel(commands, kernel, 2, NULL, global_size, NULL, 0, NULL, &prof_event);
+    err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, global_size, NULL, 0, NULL, &prof_event);
     if (err) {
         fprintf(stderr, "Failed to execute kernel!\n");
         return -1;
@@ -145,15 +151,20 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
     }
     clFinish(commands);
 
+    result->transfer_time = transfer_sec;
+    result->calc_time = 0;
+    result->errors = 0;
+
     //release memory on device and host
     //free Program, context, etc.
-    clReleaseMemObject(d_Y);
+    /*clReleaseMemObject(d_Y);
+    clReleaseMemObject(d_Ck);
     clReleaseProgram(program);
     clReleaseKernel(kernel);
     clReleaseCommandQueue(commands);
     clReleaseContext(context);
-    //free(h_Yn);
-    //free(h_Ck);
+    free(h_Yn);
+    free(h_Ck);*/
     return 0;
 
 }
@@ -368,12 +379,6 @@ main(i32 argc, char **argv)
     return 0;
 }*/
 
-struct benchmark_result {
-    double transfer_time;
-    double calc_time;
-    int errors;
-};
-
 int main() {
     // Get all devices
     cl_device_id *devices;
@@ -425,7 +430,7 @@ int main() {
     }
       
     
-    free(program_text);
-    free(devices);
+    //free(program_text);
+    //free(devices);
     return 0;
 }
