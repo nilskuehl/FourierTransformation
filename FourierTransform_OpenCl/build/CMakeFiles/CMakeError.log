@@ -1,0 +1,112 @@
+Determining if the CL_VERSION_3_0 exist failed with the following output:
+Change Dir: /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-XFjIOc
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_24f36/fast && /Library/Developer/CommandLineTools/usr/bin/make  -f CMakeFiles/cmTC_24f36.dir/build.make CMakeFiles/cmTC_24f36.dir/build
+Building C object CMakeFiles/cmTC_24f36.dir/CheckSymbolExists.c.o
+/usr/bin/clang  -F/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -MD -MT CMakeFiles/cmTC_24f36.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_24f36.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_24f36.dir/CheckSymbolExists.c.o -c /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-XFjIOc/CheckSymbolExists.c
+/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-XFjIOc/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'CL_VERSION_3_0'
+  return ((int*)(&CL_VERSION_3_0))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_24f36.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTC_24f36/fast] Error 2
+
+
+File CheckSymbolExists.c:
+/* */
+#include </Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks/OpenCL.framework/Headers/cl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef CL_VERSION_3_0
+  return ((int*)(&CL_VERSION_3_0))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the CL_VERSION_2_2 exist failed with the following output:
+Change Dir: /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-DSrwuL
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_c59c9/fast && /Library/Developer/CommandLineTools/usr/bin/make  -f CMakeFiles/cmTC_c59c9.dir/build.make CMakeFiles/cmTC_c59c9.dir/build
+Building C object CMakeFiles/cmTC_c59c9.dir/CheckSymbolExists.c.o
+/usr/bin/clang  -F/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -MD -MT CMakeFiles/cmTC_c59c9.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_c59c9.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_c59c9.dir/CheckSymbolExists.c.o -c /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-DSrwuL/CheckSymbolExists.c
+/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-DSrwuL/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'CL_VERSION_2_2'
+  return ((int*)(&CL_VERSION_2_2))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_c59c9.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTC_c59c9/fast] Error 2
+
+
+File CheckSymbolExists.c:
+/* */
+#include </Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks/OpenCL.framework/Headers/cl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef CL_VERSION_2_2
+  return ((int*)(&CL_VERSION_2_2))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the CL_VERSION_2_1 exist failed with the following output:
+Change Dir: /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-BNX8H5
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_9f07d/fast && /Library/Developer/CommandLineTools/usr/bin/make  -f CMakeFiles/cmTC_9f07d.dir/build.make CMakeFiles/cmTC_9f07d.dir/build
+Building C object CMakeFiles/cmTC_9f07d.dir/CheckSymbolExists.c.o
+/usr/bin/clang  -F/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -MD -MT CMakeFiles/cmTC_9f07d.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_9f07d.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_9f07d.dir/CheckSymbolExists.c.o -c /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-BNX8H5/CheckSymbolExists.c
+/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-BNX8H5/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'CL_VERSION_2_1'
+  return ((int*)(&CL_VERSION_2_1))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_9f07d.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTC_9f07d/fast] Error 2
+
+
+File CheckSymbolExists.c:
+/* */
+#include </Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks/OpenCL.framework/Headers/cl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef CL_VERSION_2_1
+  return ((int*)(&CL_VERSION_2_1))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the CL_VERSION_2_0 exist failed with the following output:
+Change Dir: /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-5nMS3X
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_48adb/fast && /Library/Developer/CommandLineTools/usr/bin/make  -f CMakeFiles/cmTC_48adb.dir/build.make CMakeFiles/cmTC_48adb.dir/build
+Building C object CMakeFiles/cmTC_48adb.dir/CheckSymbolExists.c.o
+/usr/bin/clang  -F/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -MD -MT CMakeFiles/cmTC_48adb.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_48adb.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_48adb.dir/CheckSymbolExists.c.o -c /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-5nMS3X/CheckSymbolExists.c
+/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/CMakeScratch/TryCompile-5nMS3X/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'CL_VERSION_2_0'
+  return ((int*)(&CL_VERSION_2_0))[argc];
+                  ^
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_48adb.dir/CheckSymbolExists.c.o] Error 1
+make: *** [cmTC_48adb/fast] Error 2
+
+
+File CheckSymbolExists.c:
+/* */
+#include </Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks/OpenCL.framework/Headers/cl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef CL_VERSION_2_0
+  return ((int*)(&CL_VERSION_2_0))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
