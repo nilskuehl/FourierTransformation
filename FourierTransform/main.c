@@ -59,31 +59,31 @@ SlowFourierTransform(float *TimeDomain, float *FreqDomain, int Size)
 
 Update(state *State)
 {
-    static int Freq1 = 4;
-    static bool Freq1_Edit = false;
+    static int Frequenz1 = 4;
+    static bool Freqeunz1_Edit = false;
     static float Amp1 = 1;
     
-    static int Freq2 = 0;
-    static bool Freq2_Edit = false;
+    static int Frequenz2 = 0;
+    static bool Frequenz2_Edit = false;
     static float Amp2 = 1;
     
-    static int Freq3 = 0;
+    static int Frequenz3 = 0;
     static float Amp3 = 1;
-    static bool Freq3_Edit = false;
+    static bool Frequenz3_Edit = false;
 
-    if (GuiSpinner((Rectangle){ 600, 15, 80, 30 }, NULL, &Freq1, 0, 10, Freq1_Edit)) 
-        Freq1_Edit = !Freq1_Edit;
-    if (GuiSpinner((Rectangle){ 700, 15, 80, 30 }, NULL, &Freq2, 0, 10, Freq2_Edit)) 
-        Freq2_Edit = !Freq2_Edit;
-    if (GuiSpinner((Rectangle){ 800, 15, 80, 30 }, NULL, &Freq3, 0, 10, Freq3_Edit)) 
-        Freq3_Edit = !Freq3_Edit;
+    if (GuiSpinner((Rectangle){ 600, 15, 80, 30 }, NULL, &Frequenz1, 0, 10, Freqeunz1_Edit)) 
+        Freqeunz1_Edit = !Freqeunz1_Edit;
+    if (GuiSpinner((Rectangle){ 700, 15, 80, 30 }, NULL, &Frequenz2, 0, 10, Frequenz2_Edit)) 
+        Frequenz2_Edit = !Frequenz2_Edit;
+    if (GuiSpinner((Rectangle){ 800, 15, 80, 30 }, NULL, &Frequenz3, 0, 10, Frequenz3_Edit)) 
+        Frequenz3_Edit = !Frequenz3_Edit;
     
     for (int N = 0; N < NUM_SAMPLES; N++)
     {
         State->Signal[N] = 0;
-        State->Signal[N] += Amp1 * sinf(2 * PI * Freq1 * ((float)N / NUM_SAMPLES));
-        State->Signal[N] += Amp2 * sinf(2 * PI * Freq2 * ((float)N / NUM_SAMPLES));
-        State->Signal[N] += Amp3 * sinf(2 * PI * Freq3 * ((float)N / NUM_SAMPLES));
+        State->Signal[N] += Amp1 * sinf(2 * PI * Frequenz1 * ((float)N / NUM_SAMPLES));
+        State->Signal[N] += Amp2 * sinf(2 * PI * Frequenz2 * ((float)N / NUM_SAMPLES));
+        State->Signal[N] += Amp3 * sinf(2 * PI * Frequenz3 * ((float)N / NUM_SAMPLES));
         State->Signal[N] /= 3;
     }
 }
@@ -91,85 +91,84 @@ Update(state *State)
 
 Draw(state *State)
 {
-    Color SignalCol = ColorAlpha(RED, 0.7f);
-    Color OverlapCol = ColorAlpha(BLUE, 0.7f);
-    Color BaselineCol = ColorAlpha(WHITE, 0.7f);
-    Color CutCol = ColorAlpha(GREEN, 0.9f);
-    Color Sum2DCol = ColorAlpha(YELLOW, 0.9f);
+    Color SignalColor = ColorAlpha(RED, 0.7f);
+    Color OverlapColor = ColorAlpha(BLUE, 0.7f);
+    Color BaselineColor = ColorAlpha(WHITE, 0.7f);
+    Color CutColor = ColorAlpha(GREEN, 0.9f);
+    Color Sum2DColor = ColorAlpha(YELLOW, 0.9f);
     float MouseX = (float)GetMouseX();
+    printf("MOUSE VALUE: %f",MouseX);
     
     // Draw the signal
     int SignalBaselineY = 150;
     int SignalHeight = 50;
-    DrawLine(0, SignalBaselineY, NUM_SAMPLES, SignalBaselineY, BaselineCol);
+    DrawLine(0, SignalBaselineY, NUM_SAMPLES, SignalBaselineY, BaselineColor);
     for (int N = 0; N < NUM_SAMPLES; N++)
     {
         float Sample = State->Signal[N];
-        DrawPixel(N, SignalBaselineY + Sample*SignalHeight, SignalCol);
+        DrawPixel(N, SignalBaselineY + Sample*SignalHeight, SignalColor);
     }
     
     // Cut Frequency
     int FrequencyLineY = 720;
-    float MaxCutFreq = 10.0f;
-    float CutFreq = (MouseX/NUM_SAMPLES) * MaxCutFreq;
+    float MaxCutFrequency = 10.0f;
+    float CutFrequency = (MouseX/NUM_SAMPLES) * MaxCutFrequency;
     
     // Draw Frequency Line
-    DrawLine(0, FrequencyLineY, NUM_SAMPLES, FrequencyLineY, BaselineCol);
+    DrawLine(0, FrequencyLineY, NUM_SAMPLES, FrequencyLineY, BaselineColor);
 
-   //TODO:
-    int CutX = 0;
-    int CutStride = max((NUM_SAMPLES/CutFreq), 1);
-    float Summation[NUM_SAMPLES] = {0};
-    int MaxCutFreqLines = NUM_SAMPLES/(int)MaxCutFreq;
-    printf("%d", CutStride);
-    for(int N = 0; N <= NUM_SAMPLES; N+=MaxCutFreqLines){
+
+    int MaxCutFrequencyLines = NUM_SAMPLES/(int)MaxCutFrequency;
+    for(int N = 0; N <= NUM_SAMPLES; N+=MaxCutFrequencyLines){
         DrawLine(N, 
             FrequencyLineY - SignalHeight, 
             N, 
-            FrequencyLineY + SignalHeight, 
+            FrequencyLineY, 
             WHITE);
-
-        DrawText(TextFormat("%.2fHz", N),
-             N,
+        
+        if(N>=102){
+            DrawText(TextFormat("%dHz", N/100),
+             N-10,
              730,
-             20,
+             15,
              WHITE);
+        }
     }
-    
-    
 
-    // Draw Cuts
-    //int CutX = 0;
-    //int CutStride = max((NUM_SAMPLES/CutFreq), 1);
-    //float Summation[NUM_SAMPLES] = {0};
-    while (CutStride > 0 && CutX < NUM_SAMPLES)
-    {
+    if(MouseX >= 0 && MouseX<= NUM_SAMPLES){
+        int CutX = 0;
+        int CutStride = max((NUM_SAMPLES/CutFrequency), 1);
+        float Summation[NUM_SAMPLES] = {0};
+
+        while (CutStride > 0 && CutX < NUM_SAMPLES)
+        {
         DrawLine(CutX, 
                  SignalBaselineY - SignalHeight, 
                  CutX, 
                  SignalBaselineY + SignalHeight, 
-                 CutCol);
+                 CutColor);
         // Draw overlap.
         for (int N = 0; (N < CutStride) && (N+CutX < NUM_SAMPLES); N++)
         {
             float Sample = State->Signal[N + CutX];
             DrawPixel(CutStride + N,
                       SignalBaselineY + Sample*SignalHeight,
-                      SignalCol);
+                      SignalColor);
             Summation[N] += Sample;
         }
         CutX += CutStride;
+        }
+
+        // Draw Summation.
+        for (int N = 0; N < min(CutStride, NUM_SAMPLES); N++)
+        {
+            float Sample = Summation[N];
+            DrawPixel(CutStride + N,
+                    SignalBaselineY + Sample*SignalHeight,
+                    OverlapColor);
+        }
     }
-    
-    // Draw Summation.
-    for (int N = 0; N < min(CutStride, NUM_SAMPLES); N++)
-    {
-        float Sample = Summation[N];
-        DrawPixel(CutStride + N,
-                  SignalBaselineY + Sample*SignalHeight,
-                  OverlapCol);
-    }
-    
+   
     SlowFourierTransform(&State->Signal[0], &State->FourierTransform[0], NUM_SAMPLES);
     
     // Draw the frequency domain
@@ -178,14 +177,22 @@ Draw(state *State)
         float F = State->FourierTransform[N];
         DrawPixel(N,
                   650 - (F * 1),
-                  Sum2DCol);
+                  PURPLE);
     }
-    
-    DrawText(TextFormat("Cut Frequency: %.2fHz", CutFreq),
+    if(0 <= CutFrequency && CutFrequency <= 10){
+        DrawText(TextFormat("Cut Frequency: %.2fHz", CutFrequency),
              15,
              15,
              20,
              WHITE);
+    }else{
+        DrawText(TextFormat("Out of range"),
+             15,
+             15,
+             20,
+             WHITE);
+    }
+    
 }
 
 
