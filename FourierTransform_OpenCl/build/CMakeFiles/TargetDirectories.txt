@@ -1,3 +1,0 @@
-/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/FourierTransform.dir
-/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/edit_cache.dir
-/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/rebuild_cache.dir

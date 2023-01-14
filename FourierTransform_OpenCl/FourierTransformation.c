@@ -13,16 +13,16 @@
 #include <CL/cl.h>
 #endif
 
-#define CL_PROGRAM_FILE "FourierKernel.cl"
-#define KERNEL_NAME "fourier_transformation"
-#define N 10
+#define CL_FILE "FourierKernel.cl"
+#define KERNEL_DEF "fourier_transformation"
+#define N 1024
+#define FREQ 10
 #define T 20
 #define PI 3.14159265359
 
 struct speedTest {
-    double transfer_time;
-    double calc_time;
-    float cK[N];
+    double calculation;
+    double transfer;
 };
 
 //Calculate the value of a singal at a given point
@@ -30,7 +30,7 @@ float calculateSignal(int x) {
     return (float) sinf((PI*x)/3);
 } 
 
-int transform(cl_device_id device, char *program_text, char *kernel_name, struct speedTest *result) {
+int transform(cl_device_id device, char *programText, char *kernelFile, struct speedTest *speedTest) {
     
     //Context
     cl_context context;
@@ -49,9 +49,9 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
 
     //generate clProgram Object
     int err;
-    cl_program program = clCreateProgramWithSource(context, 1, (const char **)&program_text, NULL, &err);
+    cl_program program = clCreateProgramWithSource(context, 1, (const char **)&programText, NULL, &err);
     if (err < 0) {
-        fprintf(stderr, "Failed to create cl program!\n");
+        fprintf(stderr, "Failed to create cl program object!\n");
         return -1;
     }
 
@@ -61,52 +61,56 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
         size_t len;
         char buffer[2048];
 
-        fprintf(stderr, "Failed to build program executable!\n");
+        fprintf(stderr, "Failed to build program!\n");
         clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
         fprintf(stderr, "%s\n", buffer);
         return -1;
     }
 
     //Create Kernels
-    cl_kernel kernel = clCreateKernel(program, kernel_name, &err);
+    cl_kernel kernel = clCreateKernel(program, KERNEL_DEF, &err);
     if (!kernel || err != CL_SUCCESS) {
         fprintf(stderr, "Failed to create kernel!\n");
         return -1;
     }
 
-    //Prepare signal data on Host machine
-    float *h_Yn = malloc(N*sizeof(float));
+    //Prepare the signal data on the Host machine
     float h_Ck[N];
     float *h_signal = malloc(N*sizeof(float));
     for (size_t i = 0; i < N; i++) {
-        h_signal[i] = calculateSignal(i);
+        h_signal[i] = sinf(2 * PI * 4 * ((float)i / N));
     }
 
 
     //create array buffer in the device memory
     cl_mem d_Y = clCreateBuffer(context, CL_MEM_READ_ONLY, N*sizeof(float), NULL, NULL);
     if (!d_Y) {
-        fprintf(stderr, "Failed to allocate device memory\n");
+        fprintf(stderr, "Failed to allocate memory on device!\n");
         return -1;
     }
     //create array buffer in the device memory
     cl_mem d_Ck = clCreateBuffer(context, CL_MEM_READ_WRITE, N*sizeof(float), NULL, NULL);
     if (!d_Ck) {
-        fprintf(stderr, "Failed to allocate device memory\n");
+        fprintf(stderr, "Failed to allocate memory on device!\n");
         return -1;
     }
 
     // Copy data to device
-    double transfer_sec = 0.0;
     cl_event prof_event;
+    size_t bytes;
+    cl_long end, start;
+    double transferTime = 0.0;
 
     err = clEnqueueWriteBuffer(commands, d_Y, CL_FALSE, 0, N*sizeof(float), h_signal, 0, NULL, &prof_event);
     if (err != CL_SUCCESS) {
-        fprintf(stderr, "Failed to write to device!\n");
+        fprintf(stderr, "Failed to write to device memory!\n");
         return -1;
     }
     // Wait for transfer to finish
     clFinish(commands);
+    clGetEventProfilingInfo(prof_event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, &bytes);
+    clGetEventProfilingInfo(prof_event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, &bytes);
+    transferTime += (double) (end - start) / 1.0e9;
 
     // Set the arguments to our compute kernel
     int n = N;
@@ -116,7 +120,7 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
     err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &d_Ck);
     //... what else goes herre has to be added when .cl file is thought out
     if (err != CL_SUCCESS) {
-        fprintf(stderr, "Failed to set kernel arguments!\n");
+        fprintf(stderr, "Failed to set the kernel arguments!\n");
         return -1;
     }
 
@@ -124,91 +128,92 @@ int transform(cl_device_id device, char *program_text, char *kernel_name, struct
     size_t global_size[] = {N};
     err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, global_size, NULL, 0, NULL, &prof_event);
     if (err) {
-        fprintf(stderr, "Failed to execute kernel!\n");
+        fprintf(stderr, "Failed to execute kernel on device!\n");
         return -1;
     }
     clFinish(commands);
 
-    // Copy Result Data Back
+    clGetEventProfilingInfo(prof_event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, &bytes);
+    clGetEventProfilingInfo(prof_event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, &bytes);
+    double execTime = (double) (end - start) / 1.0e9;
+
+    // Copy speedTest Data Back
     err = clEnqueueReadBuffer(commands, d_Ck, CL_TRUE, 0, N, h_Ck, 0, NULL, &prof_event);
     if (err != CL_SUCCESS) {
-        fprintf(stderr, "Failed to read result!\n");
+        fprintf(stderr, "Failed to copy speedTests back to host!\n");
         return -1;
     }
     clFinish(commands);
 
-    printf("\n%f\n", h_Ck[0 + N - 1]);
+    speedTest->transfer = transferTime;
+    speedTest->calculation = execTime;
 
-    result->transfer_time = transfer_sec;
-    result->calc_time = 0;
-    for(int i = 0; i < N; i++){
-            printf("ck[%d] = %0.100f\n", i, (h_Ck[i]));
-        }
-
-    //release memory on device and host
-    //free Program, context, etc.
-    /*clReleaseMemObject(d_Y);
+    //release memory
+    clReleaseMemObject(d_Y);
     clReleaseMemObject(d_Ck);
     clReleaseProgram(program);
     clReleaseKernel(kernel);
     clReleaseCommandQueue(commands);
     clReleaseContext(context);
-    free(h_Yn);*/
+    free(h_signal);
     return 0;
 
 }
 
 int main() {
-    // Get all devices
-    cl_device_id *devices;
-    cl_uint n_devices;
-    clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, 3, NULL, &n_devices);
-    devices = (cl_device_id *) malloc(n_devices * sizeof(cl_device_id));
-    clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, n_devices, devices, NULL);
-    if(n_devices == 0) {
-        fprintf(stderr, "No devices found!\n");
+    // Get all deviceList
+    cl_device_id *deviceList;
+    cl_uint numberDevices;
+
+    clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, 3, NULL, &numberDevices);
+    deviceList = (cl_device_id *) malloc(numberDevices * sizeof(cl_device_id));
+    clGetDeviceIDs(NULL, CL_DEVICE_TYPE_ALL, numberDevices, deviceList, NULL);
+    if(numberDevices == 0) {
+        fprintf(stderr, "No List od devices found!\n");
         return -1;
     }
 
-    char name[128];
-    printf("Devices:\n");
-    for(int i=0;i<n_devices;i++) {
-        clGetDeviceInfo(devices[i], CL_DEVICE_NAME, sizeof(name), name, NULL);
-        printf("[%d]: %s\n", i, name);
+    char deviceName[128];
+    printf("Aviable devices:\n");
+    for(int i=0;i<numberDevices;i++) {
+        clGetDeviceInfo(deviceList[i], CL_DEVICE_NAME, sizeof(deviceName), deviceName, NULL);
+        printf("[%d]: %s\n", i, deviceName);
     }
 
-    // Load program from file
-    FILE *program_file = fopen(CL_PROGRAM_FILE, "r");
+    // Load program .cl file
+    FILE *program_file = fopen(CL_FILE, "r");
     if(program_file == NULL) {
-        fprintf(stderr, "Failed to open OpenCL program file\n");
+        fprintf(stderr, "Failed to open .cl file\n");
         return -1;
     }
     fseek(program_file, 0, SEEK_END);
     size_t program_size = ftell(program_file);
     rewind(program_file);
+    //+ 1 for terminating String
     char *program_text = (char *) malloc((program_size + 1) * sizeof(char));
+    //terminate String
     program_text[program_size] = '\0';
     fread(program_text, sizeof(char), program_size, program_file);
     fclose(program_file);
     
 
     printf("Device                                        | Calc time s | Transfer time s \n");
-    printf("------------------------------------------------------------------------------\n");
-    for(int i=0; i < 1;i++) {
-        clGetDeviceInfo(devices[i], CL_DEVICE_NAME, sizeof(name), name, NULL);
-        printf("[%d]: %40s | ", i, name);
+    printf("--------------------------------------------------------------------------------\n");
+    for(int i=0; i < numberDevices;i++) {
+        clGetDeviceInfo(deviceList[i], CL_DEVICE_NAME, sizeof(deviceName), deviceName, NULL);
+        printf("[%d]: %40s | ", i, deviceName);
 
-        struct speedTest result;
+        struct speedTest speedTest;
 
-        transform(devices[i], program_text, KERNEL_NAME, &result);
+        transform(deviceList[i], program_text, KERNEL_DEF, &speedTest);
         
-        printf("     %.4f |           %f\n", result.calc_time, result.transfer_time);
+        printf("     %.4f |           %f\n", speedTest.calculation, speedTest.transfer);
 
     
     }
       
     
     free(program_text);
-    free(devices);
+    free(deviceList);
     return 0;
 }
