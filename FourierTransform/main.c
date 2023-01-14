@@ -18,9 +18,9 @@ typedef struct state
 } state;
 
 
-SlowFourierTransform(float *TimeDomain, float *FreqDomain, int Size)
+FourierTransformation(float *TimeDomain, float *FrequenzDomain, int Size)
 {
-    double sum = 0;
+
     // Start measuring time
     struct timeval begin, end;
     gettimeofday(&begin, 0);
@@ -43,7 +43,8 @@ SlowFourierTransform(float *TimeDomain, float *FreqDomain, int Size)
             SumX += X;
             SumY += Y;
         }
-        FreqDomain[Ki] = SumX;
+        FrequenzDomain[Ki] = SumX;
+        
     }
     // Stop measuring time and calculate the elapsed time
     gettimeofday(&end, 0);
@@ -51,13 +52,11 @@ SlowFourierTransform(float *TimeDomain, float *FreqDomain, int Size)
     long microseconds = end.tv_usec - begin.tv_usec;
     double elapsed = seconds + microseconds*1e-6;
     
-    printf("Result: %.20f\n", sum);
-    
     printf("Time measured: %.3f seconds.\n", elapsed);
     
 }
 
-Update(state *State)
+UpdateSignal(state *State)
 {
     static int Frequenz1 = 4;
     static bool Freqeunz1_Edit = false;
@@ -89,15 +88,14 @@ Update(state *State)
 }
 
 
-Draw(state *State)
+DrawGUI(state *State)
 {
     Color SignalColor = ColorAlpha(RED, 0.7f);
     Color OverlapColor = ColorAlpha(BLUE, 0.7f);
-    Color BaselineColor = ColorAlpha(WHITE, 0.7f);
+    Color BaselineColor = ColorAlpha(BLACK, 0.7f);
     Color CutColor = ColorAlpha(GREEN, 0.9f);
-    Color Sum2DColor = ColorAlpha(YELLOW, 0.9f);
     float MouseX = (float)GetMouseX();
-    printf("MOUSE VALUE: %f",MouseX);
+  
     
     // Draw the signal
     int SignalBaselineY = 150;
@@ -114,9 +112,8 @@ Draw(state *State)
     float MaxCutFrequency = 10.0f;
     float CutFrequency = (MouseX/NUM_SAMPLES) * MaxCutFrequency;
     
-    // Draw Frequency Line
+    // Draw Frequency 
     DrawLine(0, FrequencyLineY, NUM_SAMPLES, FrequencyLineY, BaselineColor);
-
 
     int MaxCutFrequencyLines = NUM_SAMPLES/(int)MaxCutFrequency;
     for(int N = 0; N <= NUM_SAMPLES; N+=MaxCutFrequencyLines){
@@ -124,16 +121,17 @@ Draw(state *State)
             FrequencyLineY - SignalHeight, 
             N, 
             FrequencyLineY, 
-            WHITE);
+            BLACK);
         
         if(N>=102){
             DrawText(TextFormat("%dHz", N/100),
              N-10,
              730,
              15,
-             WHITE);
+             BLACK);
         }
     }
+    //Draw Cuts
 
     if(MouseX >= 0 && MouseX<= NUM_SAMPLES){
         int CutX = 0;
@@ -169,37 +167,23 @@ Draw(state *State)
         }
     }
    
-    SlowFourierTransform(&State->Signal[0], &State->FourierTransform[0], NUM_SAMPLES);
+    FourierTransformation(&State->Signal[0], &State->FourierTransform[0], NUM_SAMPLES);
     
     // Draw the frequency domain
     for (int N = 0; N < NUM_SAMPLES; N++)
     {
         float F = State->FourierTransform[N];
-        DrawPixel(N,
-                  650 - (F * 1),
-                  PURPLE);
+        DrawPixel(N,650 - (F * 1),PURPLE);
     }
     if(0 <= CutFrequency && CutFrequency <= 10){
-        DrawText(TextFormat("Cut Frequency: %.2fHz", CutFrequency),
-             15,
-             15,
-             20,
-             WHITE);
+        DrawText(TextFormat("Cut Frequency: %.2fHz", CutFrequency),15,15,20,BLACK);
     }else{
-        DrawText(TextFormat("Out of range"),
-             15,
-             15,
-             20,
-             WHITE);
+        DrawText(TextFormat("Out of range"),15,15,20,BLACK);
     }
-    
 }
-
-
 
 int main() 
 {
-
     const float screen_width = NUM_SAMPLES;
     const float screen_height = 768;
     InitWindow(screen_width, screen_height, "FourierTransform");
@@ -214,10 +198,10 @@ int main()
     
     while(!WindowShouldClose())
     {
-        Update(State);
+        UpdateSignal(State);
         BeginDrawing();
-        ClearBackground(BLACK);
-        Draw(State);
+        ClearBackground(WHITE);
+        DrawGUI(State);
         EndDrawing();
     }
     
