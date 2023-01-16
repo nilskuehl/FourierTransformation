@@ -15,7 +15,7 @@
 
 #define CL_FILE "FourierKernel.cl"
 #define KERNEL_DEF "fourier_transformation"
-#define N 1000000
+#define N 1024
 #define FREQ 10
 #define T 20
 #define PI 3.14159265359

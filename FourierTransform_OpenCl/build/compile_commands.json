@@ -1,7 +1,7 @@
 [
 {
-  "directory": "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build",
-  "command": "/usr/bin/clang  -F/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -o CMakeFiles/FourierTransform.dir/FourierTransformation.c.o -c /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c",
-  "file": "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c"
+  "directory": "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build",
+  "command": "/usr/bin/clang  -F/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/System/Library/Frameworks -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk -o CMakeFiles/FourierTransform.dir/FourierTransformation.c.o -c /Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c",
+  "file": "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c"
 }
 ]

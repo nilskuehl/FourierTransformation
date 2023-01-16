@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build"
+			"value" : "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -491,7 +491,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/pkgRedirects"
+			"value" : "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -551,7 +551,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl"
+			"value" : "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1139,7 +1139,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build"
+			"value" : "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build"
 		},
 		{
 			"name" : "FurierTrans_IS_TOP_LEVEL",
@@ -1163,7 +1163,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl"
+			"value" : "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl"
 		},
 		{
 			"name" : "OPENCL_VERSION_1_2",

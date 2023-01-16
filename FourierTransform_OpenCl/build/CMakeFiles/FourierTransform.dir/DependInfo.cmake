@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c" "CMakeFiles/FourierTransform.dir/FourierTransformation.c.o" "gcc" "CMakeFiles/FourierTransform.dir/FourierTransformation.c.o.d"
+  "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c" "CMakeFiles/FourierTransform.dir/FourierTransformation.c.o" "gcc" "CMakeFiles/FourierTransform.dir/FourierTransformation.c.o.d"
   )
 
 # Targets to which this target links.

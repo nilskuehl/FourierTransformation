@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build",
-		"source" : "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl"
+		"build" : "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build",
+		"source" : "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl"
 	},
 	"version" : 
 	{

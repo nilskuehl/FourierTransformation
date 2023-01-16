@@ -7,8 +7,8 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/CMakeLists.txt"
-  "/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/FourierKernel.cl"
+  "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/CMakeLists.txt"
+  "/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/FourierKernel.cl"
   "CMakeFiles/3.25.0/CMakeCCompiler.cmake"
   "CMakeFiles/3.25.0/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.25.0/CMakeSystem.cmake"

@@ -8,8 +8,8 @@ __kernel void fourier_transformation(const int N,
     {
         float nS = (float)i/N;
         float phi = 2*3.14159265359*k*nS;
-        float X = sin(phi) * Yn[get_global_id(0)];
-        float Y = cos(phi) * Yn[get_global_id(0)];
+        float X = sin(phi) * Yn[i];
+        float Y = cos(phi) * Yn[i];
         sum += X;
     }
 

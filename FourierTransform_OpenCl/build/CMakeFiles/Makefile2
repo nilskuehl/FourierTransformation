@@ -54,10 +54,10 @@ RM = /usr/local/Cellar/cmake/3.25.0/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl
+CMAKE_SOURCE_DIR = /Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build
+CMAKE_BINARY_DIR = /Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -81,14 +81,14 @@ clean: CMakeFiles/FourierTransform.dir/clean
 CMakeFiles/FourierTransform.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FourierTransform.dir/build.make CMakeFiles/FourierTransform.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/FourierTransform.dir/build.make CMakeFiles/FourierTransform.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles --progress-num=1,2 "Built target FourierTransform"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles --progress-num=1,2 "Built target FourierTransform"
 .PHONY : CMakeFiles/FourierTransform.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/FourierTransform.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles 2
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/FourierTransform.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/build/CMakeFiles 0
 .PHONY : CMakeFiles/FourierTransform.dir/rule
 
 # Convenience name for target.

@@ -1,5 +1,5 @@
 CMakeFiles/FourierTransform.dir/FourierTransformation.c.o: \
-  /Users/nilskuhl/dev/k/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c \
+  /Users/nilskuhl/dev/pre/FourierTransformation/FourierTransform_OpenCl/FourierTransformation.c \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/usr/include/fcntl.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/usr/include/sys/fcntl.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/usr/include/sys/_types.h \
